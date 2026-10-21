@@ -1,0 +1,16 @@
+# @package _global_
+# YOLO11m fine-tuned on training players (scripts/train_detector.py, run det_yolo11m_ft).
+# It learned the GT annotators' box margin: no correction in the GT view (training);
+# in the challenge view its boxes end ~3.5% of box height below COCO boxes (measured
+# 21 Oct by IoU-matching both detectors on IMG_0114/0115), so undo that and add the
+# GT-camera bias as for the COCO detector.
+detector:
+  name: yolo11m_ft
+  weights: /data/trackid3x3/models/detector/det_yolo11m_ft/weights/best.pt
+foot:
+  training:
+    bottom_shift_frac: 0.0
+    gt_camera_bias_cm: 0.0
+  challenge:
+    bottom_shift_frac: 0.035
+    gt_camera_bias_cm: 10.0

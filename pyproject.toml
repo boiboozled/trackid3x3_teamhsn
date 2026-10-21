@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bb3x3"
+version = "0.1.0"
+description = "TrackID3x3 (9th ABC Challenge): 3x3 basketball player tracking + identification in court coordinates"
+requires-python = ">=3.10"
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.11",
+    "opencv-python-headless>=4.8",
+]
+
+[project.optional-dependencies]
+# Detection, tracking, line-fit solver and smoothing are reused from the handball project.
+handball = ["handball-field-registration[detection,field-registration,eval,tracking]"]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

@@ -1,0 +1,62 @@
+[
+ {
+  "name": "c_0_0",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "c_0_1105",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "c_1505_1105",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "c_1505_0",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "base_arc_x95",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "base_arc_x1410",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "base_key_x510",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "base_key_x995",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "ft_key_x510",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "ft_key_x995",
+  "type": "points",
+  "attributes": []
+ },
+ {
+  "name": "arc",
+  "type": "polyline",
+  "attributes": []
+ },
+ {
+  "name": "no_charge",
+  "type": "polyline",
+  "attributes": []
+ }
+]

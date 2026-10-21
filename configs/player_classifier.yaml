@@ -1,0 +1,39 @@
+# 12-way player classifier on training GT crops (scripts/train_player_classifier.py).
+run_name: player_cls
+crops_dir: /data/trackid3x3/crops
+out_dir: /data/trackid3x3/models/player_cls/${run_name}_${now:%Y%m%d_%H%M%S}
+
+val_videos: [IMG_0108, IMG_0109]  # together they cover all four squads; [] = train on everything
+backbone: convnext_tiny.fb_in22k
+pretrained: true
+
+epochs: 8
+batch_size: 128
+lr: 2.0e-4
+weight_decay: 0.05
+warmup_frac: 0.05
+label_smoothing: 0.1
+workers: 8
+seed: 0
+max_train_samples: null  # subsample for smoke runs
+
+augment:
+  brightness: 0.4
+  contrast: 0.4
+  saturation: 0.3
+  hue: 0.02  # bib colour is the squad: keep hue nearly fixed
+  blur_p: 0.3
+  downscale_p: 0.4  # simulate smaller / blurrier far-court players
+  downscale_min: 0.4
+  erase_p: 0.3  # partial occlusion
+  shift: 0.08  # box jitter, fraction of crop size
+
+mlflow:
+  tracking_uri: http://localhost:5000
+  experiment_name: trackid3x3
+
+hydra:
+  run:
+    dir: outputs/hydra/${now:%Y-%m-%d_%H-%M-%S}_${run_name}
+  job:
+    chdir: false

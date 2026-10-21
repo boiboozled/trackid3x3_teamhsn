@@ -1,0 +1,24 @@
+# with_reid defaults to false - see src/handball/detection/trackers/botsort.py's
+# module docstring for why (a real packaging bug in boxmot 22.0.0 breaks
+# ReIDModel's import chain). This config still gets BoT-SORT's camera-motion
+# compensation + two-stage matching over plain motion+IoU, just without the
+# appearance term. Set with_reid: true once boxmot's wheel is fixed upstream.
+_target_: handball.detection.trackers.botsort.BotSortTracker
+det_thresh: 0.3
+max_age: 30
+min_hits: 3
+iou_threshold: 0.3
+track_high_thresh: 0.5
+track_low_thresh: 0.1
+new_track_thresh: 0.6
+track_buffer: 30
+match_thresh: 0.8
+proximity_thresh: 0.5
+appearance_thresh: 0.25
+use_cmc: true
+cmc_method: ecc
+frame_rate: 30
+with_reid: false
+reid_weights: osnet_x0_25_msmt17.pt
+device: null
+half: false

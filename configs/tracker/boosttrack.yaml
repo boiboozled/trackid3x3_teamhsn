@@ -1,0 +1,21 @@
+# with_reid defaults to false, same reasoning as configs/tracker/botsort.yaml
+# (a real packaging bug in boxmot 22.0.0 breaks ReIDModel's import chain) -
+# though BoostTrack itself already defaults with_reid=False upstream, so this
+# is just consistency, not a workaround here specifically.
+_target_: handball.detection.trackers.boosttrack.BoostTrackTracker
+det_thresh: 0.3
+max_age: 30
+min_hits: 3
+iou_threshold: 0.3
+use_cmc: true
+cmc_method: ecc
+lambda_iou: 0.5
+lambda_mhd: 0.25
+lambda_shape: 0.25
+use_dlo_boost: true
+use_duo_boost: true
+dlo_boost_coef: 0.65
+with_reid: false
+reid_weights: osnet_x0_25_msmt17.pt
+device: null
+half: false

@@ -1,0 +1,76 @@
+# End-to-end TrackID3x3 pipeline. Every run logs to MLflow (experiment trackid3x3).
+defaults:
+  - tracker: bytetrack
+  - _self_
+
+run_name: e2e
+data_root: /data/trackid3x3
+cache_dir: /data/trackid3x3/cache
+
+videos:
+  training: [IMG_0104, IMG_0105, IMG_0106, IMG_0107, IMG_0108, IMG_0109, IMG_0110, IMG_0111]
+  challenge: [IMG_0114, IMG_0115]
+max_frames: null  # set for quick smoke runs
+
+detector:
+  name: yolo11m_coco
+  weights: /home/mbalu/handball_field_registration/yolo11m.pt
+  imgsz: 1280
+  conf: 0.1
+  half: true
+  batch: 16
+
+registration:
+  # official | dir with <video>.npy. Default: homographies from the 4 hand-clicked court corners
+  # (21 Oct). The corrected official file sits 1-4 px inside the white lines (13 cm median
+  # difference); the classic-CV line fit locks onto the grey border band's edge, so not used.
+  challenge: ${data_root}/registration_clicks
+
+identity:
+  squad_features: ${data_root}/features/squad_colour.npz
+  min_squad_share: 0.5
+  prototype_slack: 1.25
+  leave_one_out: true  # training videos never see their own colour features
+  bib_filter: true  # colour distance decides whether a detection wears a bib at all
+  squad_from: colour  # colour | classifier (sweep 20 Oct: colour +2.6 full TI-HOTA with w=1)
+
+# Position = H(bbox bottom-centre - bottom_shift_frac * box h) + gt_camera_bias_cm toward the GT camera.
+# Values for the COCO detector; see configs/detector_ft.yaml for the fine-tuned one.
+foot:
+  training:
+    bottom_shift_frac: 0.0
+    gt_camera_bias_cm: 10.0  # GT boxes end ~1.5 px below COCO boxes: +3.3 TI-HOTA tau=1m held-out
+  challenge:
+    bottom_shift_frac: 0.0
+    gt_camera_bias_cm: 10.0
+
+classifier:
+  checkpoint: null  # 12-way player classifier (scripts/train_player_classifier.py); null = colour + placeholder numbers
+
+assembly:
+  method: slots  # slots: 3 identity slots per squad (bb3x3.assign) | tracks: v0 tracker + placeholder numbers
+  min_conf: 0.3
+  min_track_len: 10  # tracks method only
+  court_margin_cm: 400
+  slots:
+    dist_scale_cm: 50.0
+    identity_weight: 4.0
+    max_identity_nll: 3.0
+    gate_base_cm: 150.0
+    gate_per_frame_cm: 30.0
+    lost_after: 45
+    velocity_alpha: 0.3
+    max_unmatched_cost: 8.0
+    max_gap_fill: 30
+
+tau_cm: [100, 50]
+
+mlflow:
+  tracking_uri: http://localhost:5000
+  experiment_name: trackid3x3
+
+hydra:
+  run:
+    dir: outputs/runs/${now:%Y-%m-%d_%H-%M-%S}_${run_name}
+  job:
+    chdir: false
