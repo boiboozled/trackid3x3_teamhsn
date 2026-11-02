@@ -1,0 +1,25 @@
+# @package _global_
+# Configuration of the submitted predictions (results deadline 3 Nov 2026).
+#
+#   python scripts/run_pipeline.py +preset=final run_name=final_submission
+#
+# Every model here has a held-out evaluation (train on 6 training videos, test on
+# IMG_0108/0109: TI-HOTA 95.8 at tau = 1 m, 88.4 at tau = 0.5 m), and nothing is
+# estimated from the challenge videos except the court corners, which the rules allow
+# to be selected by hand (/data/trackid3x3/registration_clicks).
+detector:
+  name: yolo11m_ft
+  weights: /data/trackid3x3/models/detector/det_yolo11m_ft/weights/best.pt
+classifier:
+  checkpoint: /data/trackid3x3/models/player_cls/cls_v1_convnext_t_20261020_212654/best.pt
+foot:
+  training:
+    bottom_shift_frac: 0.0
+    gt_camera_bias_cm: 0.0
+  challenge:
+    # The fine-tuned detector learned the GT annotators' box margin: its boxes end 2.0% of
+    # box height below COCO-detector boxes (held-out IMG_0108: 2.08%, IMG_0109: 1.95%).
+    # Undo that in the challenge view, then shift toward the GT camera as measured for
+    # COCO boxes on training (GT boxes end ~1.5 px lower: +10 cm).
+    bottom_shift_frac: 0.020
+    gt_camera_bias_cm: 10.0

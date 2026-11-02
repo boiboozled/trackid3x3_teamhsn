@@ -1,0 +1,18 @@
+# @package _global_
+# YOLO11m fine-tuned on the players of all 8 training videos (scripts/train_detector.py,
+# run det_yolo11m_ft_all8_r2, 25 epochs, same recipe as det_yolo11m_ft which scored
+# 95.8 / 88.4 TI-HOTA on held-out IMG_0108/0109). No held-out score of its own.
+# Challenge view: its boxes end 2.7-3.1% of box height below COCO boxes (measured 22 Oct
+# on IMG_0114/0115 by IoU matching), so the bottom is moved up by 2.9% before adding the
+# GT-camera bias. On the challenge videos it agrees with the det_yolo11m_ft output to a
+# 5 cm median, with 0.4-0.5% of rows more than 1 m apart.
+detector:
+  name: yolo11m_ft_all8_r2
+  weights: /data/trackid3x3/models/detector/det_yolo11m_ft_all8_r2/weights/last.pt
+foot:
+  training:
+    bottom_shift_frac: 0.0
+    gt_camera_bias_cm: 0.0
+  challenge:
+    bottom_shift_frac: 0.029
+    gt_camera_bias_cm: 10.0
